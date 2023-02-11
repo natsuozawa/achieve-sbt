@@ -4,6 +4,7 @@
 // You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
+const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
 async function main() {
@@ -13,8 +14,10 @@ async function main() {
 
   const lockedAmount = hre.ethers.utils.parseEther("1");
 
+  const [owner, receiver] = await ethers.getSigners();
+
   const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const lock = await Lock.deploy(unlockTime, receiver.address, { value: lockedAmount });
 
   await lock.deployed();
 

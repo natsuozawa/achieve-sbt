@@ -65,9 +65,9 @@ describe("Lock", function () {
   describe("Withdrawals", function () {
     describe("Validations", function () {
       it("Should revert with the right error if called too soon", async function () {
-        const { lock } = await loadFixture(deployOneYearLockFixture);
+        const { lock, receiver } = await loadFixture(deployOneYearLockFixture);
 
-        await expect(lock.withdraw()).to.be.revertedWith(
+        await expect(lock.withdraw(receiver.address)).to.be.revertedWith(
           "You can't withdraw yet"
         );
       });
@@ -81,47 +81,47 @@ describe("Lock", function () {
         await time.increaseTo(unlockTime);
 
         // We use lock.connect() to send a transaction from another account
-        await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
-          "You aren't the owner"
+        await expect(lock.connect(otherAccount).withdraw(otherAccount.address)).to.be.revertedWith(
+          "You aren't the owner or receiver"
         );
       });
 
       it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-        const { lock, unlockTime } = await loadFixture(
+        const { lock, unlockTime, owner } = await loadFixture(
           deployOneYearLockFixture
         );
 
         // Transactions are sent using the first signer by default
         await time.increaseTo(unlockTime);
 
-        await expect(lock.withdraw()).not.to.be.reverted;
+        await expect(lock.withdraw(owner.address)).not.to.be.reverted;
       });
     });
 
     describe("Events", function () {
       it("Should emit an event on withdrawals", async function () {
-        const { lock, unlockTime, lockedAmount } = await loadFixture(
+        const { lock, unlockTime, lockedAmount, receiver } = await loadFixture(
           deployOneYearLockFixture
         );
 
         await time.increaseTo(unlockTime);
 
-        await expect(lock.withdraw())
+        await expect(lock.withdraw(receiver.address))
           .to.emit(lock, "Withdrawal")
           .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
       });
     });
 
     describe("Transfers", function () {
-      it("Should transfer the funds to the owner", async function () {
-        const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
+      it("Should transfer the funds to the receiver", async function () {
+        const { lock, unlockTime, lockedAmount, receiver } = await loadFixture(
           deployOneYearLockFixture
         );
 
         await time.increaseTo(unlockTime);
 
-        await expect(lock.withdraw()).to.changeEtherBalances(
-          [owner, lock],
+        await expect(lock.withdraw(receiver.address)).to.changeEtherBalances(
+          [receiver, lock],
           [lockedAmount, -lockedAmount]
         );
       });
