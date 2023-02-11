@@ -17,12 +17,15 @@ describe("Lock", function () {
     const unlockTime = (await time.latest()) + ONE_YEAR_IN_SECS;
 
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, otherAccount, receiver] = await ethers.getSigners();
 
     const Lock = await ethers.getContractFactory("Lock");
-    const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+    // Signer object has a lot of fields, so extract a
+    // ENS not recognized (Ethereum Name Service) error will be returned otherwise.
+    const lock = await Lock.deploy(unlockTime, receiver.address, { value: lockedAmount });
 
-    return { lock, unlockTime, lockedAmount, owner, otherAccount };
+    // Use the object to see if the test conditions are passed.
+    return { lock, unlockTime, receiver, lockedAmount, owner, otherAccount };
   }
 
   describe("Deployment", function () {
