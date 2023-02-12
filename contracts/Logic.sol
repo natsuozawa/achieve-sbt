@@ -17,7 +17,7 @@ contract Logic {
 
     // Run at deploy
     constructor(address _realityETHContract) payable {
-        realityETHContract = _realityETHContract;
+        realityETHContract = IRealityETH(_realityETHContract);
         console.log("Deploy successful");
     }
 
@@ -26,8 +26,8 @@ contract Logic {
     // startTimestamp: when the question will be roughly validated.
     function declareGoal(string calldata question, uint32 timeout, uint32 startTimestamp, uint amount) public {
         require(block.timestamp < startTimestamp, "start timestamp should happen after current time");
-        bytes32 questionId = realityETHContract.askQuestion(0, question, 0x0, timeout, startTimestamp, questionAskedCount[keccak256(question)]);
-        questionAskedByUserAddr[msg.sender] = questionID;
+        bytes32 questionId = realityETHContract.askQuestion(0, question, address(0x0), timeout, startTimestamp, 0);//questionAskedCount[keccak256(question)]);
+        questionAskedByUserAddr[msg.sender] = questionId;
 
         emit Withdrawal(amount, block.timestamp);
         depositByUserAddr[msg.sender] = amount;
@@ -40,7 +40,7 @@ contract Logic {
     // After declareGoal has been called and timeout time has passed, run this function either manually or by using an alarm clock oracle.
     function evaluateGoal(address user) public {
         require(questionAskedByUserAddr[user] > 0, "User has no goal declared");
-        bytes32 answer = realityETHContract.resultFor(questionAskedByUserAddr[user]);
+        uint256 answer = uint256(realityETHContract.resultFor(questionAskedByUserAddr[user]));
         if (answer == 0x1) {
             // Some code for SBT
             // Pay back

@@ -60,3 +60,4 @@ interface IRealityETH is IBalanceHolder {
      function resultForOnceSettled (bytes32 question_id) external view returns (bytes32);
      function template_hashes (uint256) external view returns (bytes32);
      function templates (uint256) external view returns (uint256);
+}
