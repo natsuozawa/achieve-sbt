@@ -13,8 +13,11 @@ describe("Logic", function () {
     const Logic = await ethers.getContractFactory("Logic");
     // Signer object has a lot of fields, so extract a
     // ENS not recognized (Ethereum Name Service) error will be returned otherwise.
-    const realityETH = jsonRpcProvider.getSigner([0x6F80C5cBCF9FbC2dA2F0675E56A5900BB70Df72f]); //ETH Test Net address ETH05
-    const logic = await Logic.deploy(realityETH);
+
+    const RealityETH = await ethers.getContractFactory("RealityETH_v3_0");
+    // They want an interface, bytecode
+    const realityETH = RealityETH.attach("0x6F80C5cBCF9FbC2dA2F0675E56A5900BB70Df72f"); //ETH Test Net address of RealityETH
+    const logic = await Logic.deploy(realityETH.address);
 
     // Use the object to see if the test conditions are passed.
     return { logic, realityETH };
