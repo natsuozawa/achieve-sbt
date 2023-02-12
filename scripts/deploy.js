@@ -16,13 +16,13 @@ async function main() {
 
   const [owner, receiver] = await ethers.getSigners();
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, receiver.address, { value: lockedAmount });
+  const Logic = await hre.ethers.getContractFactory("Logic");
+  const logic = await Logic.deploy(unlockTime, receiver.address, { value: lockedAmount });
 
-  await lock.deployed();
+  await logic.deployed();
 
   console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    `Achieve SBT Logic side deployed to ${logic.address}`
   );
 }
 
