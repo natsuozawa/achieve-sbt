@@ -9,6 +9,7 @@ contract Logic {
     uint public unlockTime;
     IRealityETH realityETHContract;
 
+
     mapping(bytes32 => uint) private questionAskedCount; // Necessary to ensure uniqueness of hash
     mapping(address => bytes32) public questionAskedByUserAddr; // MVP 1 user to 1 question mapping 
     mapping(address => uint) public depositByUserAddr; // MVP 1 user to 1 deposit amount mapping 
@@ -26,8 +27,8 @@ contract Logic {
     // startTimestamp: when the question will be roughly validated.
     function declareGoal(string calldata question, uint32 timeout, uint32 startTimestamp, uint amount) public {
         require(block.timestamp < startTimestamp, "start timestamp should happen after current time");
-        bytes32 questionId = realityETHContract.askQuestion(0, question, address(0x0), timeout, startTimestamp, 0);//questionAskedCount[keccak256(question)]);
-        questionAskedByUserAddr[msg.sender] = questionId;
+        //bytes32 questionId = realityETHContract.askQuestion(0, question, address(0x0), timeout, startTimestamp, 0);//questionAskedCount[keccak256(question)]);
+        //questionAskedByUserAddr[msg.sender] = questionId;
 
         emit Withdrawal(amount, block.timestamp);
         depositByUserAddr[msg.sender] = amount;

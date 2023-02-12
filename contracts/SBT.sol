@@ -22,7 +22,7 @@
 
 //     mapping(uint256 => bytes) public spell;
 
-//     constructor(address _lock_contract) ERC721Soulbound(_COVEN, _NAME, _SYMBOL) {
+//     constructor(address _lock_contract) ERC721Soulbound(_NAME, _SYMBOL) {
 //       LOCK_CONTRACT = _lock_contract;
 //     } // solhint-disable-line no-empty-blocks
 
@@ -34,8 +34,8 @@
 //     }
 
 //     function burn(uint256 tokenId) public virtual override {
-//         require(soulOwner(tokenId) == msg.sender, "Spellbound: only soulOwner can release spell");
-//         ERC721Burnable.burn(tokenId);
+//         // require(soulOwner(tokenId) == msg.sender, "Spellbound: only soulOwner can release spell");
+//         // ERC721Burnable.burn(tokenId);
 //     }
 
 //     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
